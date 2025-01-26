@@ -636,8 +636,8 @@ class CpuZone(FanController):
             super().build_hwmon_path(hwmon_str)
         # If the hwmon_path string was not specified it will be created automatically. We assume either Intel (using coretemp) or AMD (using k10temp) CPUs
         else:
-            for module in ['coretemp', 'k10temp']:
-                hwmon_path = [self.get_tempinput(dev) for dev in self.udev_context.list_devices(DRIVER=module)]
+            for dev_filter in [{'MODALIAS':'platform:coretemp'}, {'DRIVER':'k10temp'}]:
+                hwmon_path = [self.get_tempinput(dev) for dev in self.udev_context.list_devices(**dev_filter)]
                 if hwmon_path:
                     break
             if not hwmon_path:
